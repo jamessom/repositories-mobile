@@ -22,7 +22,18 @@ export default function App() {
   }, []);
 
   async function handleLikeRepository(id) {
-    // Implement "Like Repository" functionality
+    const { data: { likes } } = await api.post(`repositories/${id}/like/`);
+    
+    const updatedRepositories = repositories.map(repository => {
+      if (repository.id !== id) {
+        return repository;
+      }
+
+      repository.likes = likes;
+      return repository;
+    });
+
+    setRepositories(updatedRepositories);
   }
 
   repositoryList = ({ item: repository }) => (
@@ -35,7 +46,7 @@ export default function App() {
 
       <View style={styles.likesContainer}>
         <Text style={styles.likeText} testID={`repository-likes-${repository.id}`}>
-          {repository.likes} curtidas
+          {repository.likes} {repository.likes > 1 ? 'curtidas' : 'curtida' }
         </Text>
       </View>
 
