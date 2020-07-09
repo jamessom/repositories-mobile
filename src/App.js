@@ -22,18 +22,16 @@ export default function App() {
   }, []);
 
   async function handleLikeRepository(id) {
-    const { data: { likes } } = await api.post(`repositories/${id}/like/`);
-    
-    const updatedRepositories = repositories.map(repository => {
-      if (repository.id !== id) {
-        return repository;
-      }
+    try {
+      const response = await api.post(`/repositories/${id}/like`);
 
-      repository.likes = likes;
-      return repository;
-    });
+      const newData = repositories.filter(repository => repository.id !== id);
 
-    setRepositories(updatedRepositories);
+      setRepositories([...newData, response.data]);
+      
+    } catch (error) {
+      console.log('Something went wrong', error);
+    }
   }
 
   repositoryList = ({ item: repository }) => (
